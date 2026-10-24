@@ -1,0 +1,194 @@
+[
+  {
+    "id": "CASE-001",
+    "hazard_type": "water_clogging",
+    "description": "Heavy rainfall causes severe waterlogging on boundary road between Ward 12 and Ward 13. Stormwater drain clogged, road flooded 2 feet deep preventing transit.",
+    "ward": "Ward 12 / Ward 13 Boundary Road",
+    "is_ward_boundary": true,
+    "ground_truth": {
+      "is_conflict_detected": true,
+      "conflict_type": "BOUNDARY_ROAD_DUAL_INFRASTRUCTURE",
+      "primary_department_id": "DEPT_DRAINAGE",
+      "secondary_department_id": "DEPT_ROADS",
+      "joint_action_required": true,
+      "ownership_rule_applied": "HYDRAULIC_ROOT_CAUSE_PRECEDENCE",
+      "conflict_resolution_rationale": "Waterlogging on road is hydraulically caused by drainage blockage. Dewatering and drain clearance is prerequisite before road damage inspection or asphalt resurfacing."
+    }
+  },
+  {
+    "id": "CASE-002",
+    "hazard_type": "water_clogging",
+    "description": "Boundary canal overflowing on GN Chetty Road between Ward 12 and Ward 13, water submerging road pavement and eroding asphalt edges.",
+    "ward": "Ward 12 / Ward 13 Boundary",
+    "is_ward_boundary": true,
+    "ground_truth": {
+      "is_conflict_detected": true,
+      "conflict_type": "BOUNDARY_ROAD_DUAL_INFRASTRUCTURE",
+      "primary_department_id": "DEPT_DRAINAGE",
+      "secondary_department_id": "DEPT_ROADS",
+      "joint_action_required": true,
+      "ownership_rule_applied": "HYDRAULIC_ROOT_CAUSE_PRECEDENCE",
+      "conflict_resolution_rationale": "Canal overflow must be arrested by Drainage department dewatering units before Roads department can execute sub-base stabilization."
+    }
+  },
+  {
+    "id": "CASE-003",
+    "hazard_type": "electricity_hazard",
+    "description": "Heavy thunderstorm uprooted roadside tree branch that fell directly onto high-tension 11kV power line, wire is sparking violently against tree foliage on boundary road.",
+    "ward": "Ward 77 / Ward 78 Boundary",
+    "is_ward_boundary": true,
+    "ground_truth": {
+      "is_conflict_detected": true,
+      "conflict_type": "LIVE_POWER_AND_TREE_ENTANGLEMENT",
+      "primary_department_id": "DEPT_ELECTRICITY",
+      "secondary_department_id": "DEPT_HORTICULTURE",
+      "joint_action_required": true,
+      "ownership_rule_applied": "LIFE_SAFETY_ISOLATION_PRECEDENCE",
+      "conflict_resolution_rationale": "Live electrical danger presents imminent electrocution hazard. Electricity department must de-energize and secure cable before Horticulture crews can safely saw tree limbs."
+    }
+  },
+  {
+    "id": "CASE-004",
+    "hazard_type": "electricity_hazard",
+    "description": "Snapped street light electric cable touching wet iron road railing and tree leaves after heavy rain, electric current leaking.",
+    "ward": "Ward 112 / Ward 113 Boundary",
+    "is_ward_boundary": true,
+    "ground_truth": {
+      "is_conflict_detected": true,
+      "conflict_type": "LIVE_POWER_AND_TREE_ENTANGLEMENT",
+      "primary_department_id": "DEPT_ELECTRICITY",
+      "secondary_department_id": "DEPT_HORTICULTURE",
+      "joint_action_required": true,
+      "ownership_rule_applied": "LIFE_SAFETY_ISOLATION_PRECEDENCE",
+      "conflict_resolution_rationale": "Power distribution crew must immediately isolate feeder circuit to prevent public shock before tree pruning and railing repair."
+    }
+  },
+  {
+    "id": "CASE-005",
+    "hazard_type": "water_supply_leak",
+    "description": "High pressure drinking water underground pipeline burst under main arterial road, gushing water washed away road sub-base creating dangerous asphalt sinkhole crater.",
+    "ward": "Ward 95 / Ward 96 Boundary",
+    "is_ward_boundary": true,
+    "ground_truth": {
+      "is_conflict_detected": true,
+      "conflict_type": "UNDERGROUND_PIPE_BURST_AND_ROAD_CAVE_IN",
+      "primary_department_id": "DEPT_WATER_SUPPLY",
+      "secondary_department_id": "DEPT_ROADS",
+      "joint_action_required": true,
+      "ownership_rule_applied": "UTILITY_EROSION_PRECEDENCE",
+      "conflict_resolution_rationale": "Pipeline burst is the active cause of ground subsidence. Water board must isolate valve and repair pipe before Roads crew can backfill and pave sinkhole."
+    }
+  },
+  {
+    "id": "CASE-006",
+    "hazard_type": "electricity_hazard",
+    "description": "Floodwater from clogged drain submerged street electricity junction box, visible electric sparks and boiling water creating high fatality electrocution trap.",
+    "ward": "Ward 12 / Ward 13 Boundary",
+    "is_ward_boundary": true,
+    "ground_truth": {
+      "is_conflict_detected": true,
+      "conflict_type": "ELECTROCUTION_IN_FLOODWATER",
+      "primary_department_id": "DEPT_ELECTRICITY",
+      "secondary_department_id": "DEPT_DRAINAGE",
+      "joint_action_required": true,
+      "ownership_rule_applied": "LIFE_SAFETY_ISOLATION_PRECEDENCE",
+      "conflict_resolution_rationale": "Immediate power shutdown at substation is required within minutes to prevent deaths. Drainage crew can only pump water after electricity department clears grid safety."
+    }
+  },
+  {
+    "id": "CASE-007",
+    "hazard_type": "tree_debris",
+    "description": "Massive gulmohar tree uprooted across four-lane boundary arterial avenue, crushed road median divider and damaged asphalt surface.",
+    "ward": "Ward 140 / Ward 141 Boundary",
+    "is_ward_boundary": true,
+    "ground_truth": {
+      "is_conflict_detected": true,
+      "conflict_type": "TRANSIT_OBSTRUCTION_AND_ROAD_DAMAGE",
+      "primary_department_id": "DEPT_HORTICULTURE",
+      "secondary_department_id": "DEPT_ROADS",
+      "joint_action_required": true,
+      "ownership_rule_applied": "TRANSIT_OBSTRUCTION_PRECEDENCE",
+      "conflict_resolution_rationale": "Tree trunk must be sectioned and evacuated by Horticulture woodcutters before Roads Department can access and rebuild damaged central divider kerb."
+    }
+  },
+  {
+    "id": "CASE-008",
+    "hazard_type": "solid_waste",
+    "description": "Huge heap of commercial market refuse and packaging dumped inside open stormwater drain canal entrance, causing localized road flooding.",
+    "ward": "Ward 80 / Ward 81 Boundary",
+    "is_ward_boundary": true,
+    "ground_truth": {
+      "is_conflict_detected": true,
+      "conflict_type": "GARBAGE_BLOCKING_STORM_DRAIN",
+      "primary_department_id": "DEPT_SOLID_WASTE",
+      "secondary_department_id": "DEPT_DRAINAGE",
+      "joint_action_required": true,
+      "ownership_rule_applied": "DEBRIS_CLEARANCE_PRECEDENCE",
+      "conflict_resolution_rationale": "Solid Waste department compactors and excavators must haul external dumped garbage before Drainage crew can desilt interior canal bed."
+    }
+  },
+  {
+    "id": "CASE-009",
+    "hazard_type": "road_potholes",
+    "description": "Large deep asphalt pothole in middle of residential road causing two-wheeler skidding. No waterlogging or wires.",
+    "ward": "Ward 12 (Interior)",
+    "is_ward_boundary": false,
+    "ground_truth": {
+      "is_conflict_detected": false,
+      "conflict_type": "SINGLE_DEPARTMENT_MANDATE",
+      "primary_department_id": "DEPT_ROADS",
+      "secondary_department_id": null,
+      "joint_action_required": false,
+      "ownership_rule_applied": "DIRECT_STATUTORY_MANDATE",
+      "conflict_resolution_rationale": "Standard road infrastructure pothole maintenance within interior ward."
+    }
+  },
+  {
+    "id": "CASE-010",
+    "hazard_type": "electricity_hazard",
+    "description": "Four streetlights dark on residential 2nd street, timer switch malfunctioning.",
+    "ward": "Ward 13 (Interior)",
+    "is_ward_boundary": false,
+    "ground_truth": {
+      "is_conflict_detected": false,
+      "conflict_type": "SINGLE_DEPARTMENT_MANDATE",
+      "primary_department_id": "DEPT_ELECTRICITY",
+      "secondary_department_id": null,
+      "joint_action_required": false,
+      "ownership_rule_applied": "DIRECT_STATUTORY_MANDATE",
+      "conflict_resolution_rationale": "Streetlight luminaire replacement and photocell timer maintenance under Electricity department."
+    }
+  },
+  {
+    "id": "CASE-011",
+    "hazard_type": "water_clogging",
+    "description": "Storm drain chamber silted up in public park interior, water overflow on grass lawn.",
+    "ward": "Ward 140 (Interior)",
+    "is_ward_boundary": false,
+    "ground_truth": {
+      "is_conflict_detected": false,
+      "conflict_type": "SINGLE_DEPARTMENT_MANDATE",
+      "primary_department_id": "DEPT_DRAINAGE",
+      "secondary_department_id": null,
+      "joint_action_required": false,
+      "ownership_rule_applied": "DIRECT_STATUTORY_MANDATE",
+      "conflict_resolution_rationale": "Silt removal and chamber cleaning within single ward."
+    }
+  },
+  {
+    "id": "CASE-012",
+    "hazard_type": "tree_debris",
+    "description": "Dry tree branch snapped inside playground compound, lying on ground.",
+    "ward": "Ward 77 (Interior)",
+    "is_ward_boundary": false,
+    "ground_truth": {
+      "is_conflict_detected": false,
+      "conflict_type": "SINGLE_DEPARTMENT_MANDATE",
+      "primary_department_id": "DEPT_HORTICULTURE",
+      "secondary_department_id": null,
+      "joint_action_required": false,
+      "ownership_rule_applied": "DIRECT_STATUTORY_MANDATE",
+      "conflict_resolution_rationale": "Garden and tree debris clearance by local horticulture team."
+    }
+  }
+]
