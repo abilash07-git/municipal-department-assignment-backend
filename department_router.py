@@ -148,3 +148,66 @@ def detect_ping_pong_deadlock(hops: List[dict]) -> bool:
         if prev_hop["from"] == curr_hop["to"] and prev_hop["to"] == curr_hop["from"]:
             return True
     return False
+
+def haversine_distance_meters(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Calculates great-circle distance between two GPS coordinates in meters."""
+    from math import radians, cos, sin, asin, sqrt
+    R = 6371000.0  # Earth radius in meters
+    dLat = radians(lat2 - lat1)
+    dLon = radians(lon2 - lon1)
+    a = sin(dLat / 2.0) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dLon / 2.0) ** 2
+    c = 2.0 * asin(sqrt(a))
+    return R * c
+
+def cluster_complaints_by_proximity(complaints: List[dict], max_distance_meters: float = 80.0) -> List[dict]:
+    """
+    Groups overlapping citizen reports by location radius (<= 80m) and department type.
+    Prevents dispatching duplicate crews to the exact same incident.
+    """
+    clusters = []
+    visited = set()
+
+    for i, c1 in enumerate(complaints):
+        if c1["complaint_id"] in visited:
+            continue
+
+        c1_lat = c1["coordinates"]["latitude"]
+        c1_lon = c1["coordinates"]["longitude"]
+        dept1 = c1.get("pre_selected_department_id") or c1.get("assigned_department")
+
+        cluster_members = [c1]
+        visited.add(c1["complaint_id"])
+
+        for j, c2 in enumerate(complaints):
+            if c2["complaint_id"] in visited:
+                continue
+
+            dept2 = c2.get("pre_selected_department_id") or c2.get("assigned_department")
+            if dept1 != dept2:
+                continue
+
+            c2_lat = c2["coordinates"]["latitude"]
+            c2_lon = c2["coordinates"]["longitude"]
+            dist = haversine_distance_meters(c1_lat, c1_lon, c2_lat, c2_lon)
+
+            if dist <= max_distance_meters:
+                cluster_members.append(c2)
+                visited.add(c2["complaint_id"])
+
+        lead_complaint = max(cluster_members, key=lambda x: x.get("risk_score", 50))
+        clusters.append({
+            "cluster_id": f"CLUST-{lead_complaint['complaint_id'].replace('CMP-', '')}",
+            "lead_complaint_id": lead_complaint["complaint_id"],
+            "detected_problem": lead_complaint["detected_problem"],
+            "department_id": dept1,
+            "department_name": lead_complaint.get("pre_selected_department_name") or lead_complaint.get("assigned_department_name"),
+            "highest_risk_score": lead_complaint["risk_score"],
+            "total_citizen_reports": len(cluster_members),
+            "approximate_location": {
+                "latitude": round(sum(m["coordinates"]["latitude"] for m in cluster_members) / len(cluster_members), 4),
+                "longitude": round(sum(m["coordinates"]["longitude"] for m in cluster_members) / len(cluster_members), 4)
+            },
+            "member_complaints": [m["complaint_id"] for m in cluster_members]
+        })
+
+    return clusters

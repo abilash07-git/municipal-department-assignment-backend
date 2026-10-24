@@ -92,12 +92,39 @@ def run_tests():
     print(f"Emergency Window:    {deadlock_res['emergency_sla']['probabilistic_eta_range']}")
     assert deadlock_res["status"] == "DEADLOCK_TRIGGERED"
 
-    # 6. Verify Dashboard Stats
-    print("\n--- 6. Verifying Dashboard KPI Metrics ---")
+    # 6. Verify Dashboard Stats & Active Dispatches
+    print("\n--- 6. Verifying Dashboard KPI Metrics & Active Dispatches ---")
     stats = client.get("/api/v1/admin/dashboard-stats").json()
     print(f"Total Complaints:    {stats['total_complaints']}")
     print(f"Deadlock Escalations:{stats['deadlock_escalations']}")
     print(f"Critical Hazards:    {stats['critical_priority_hazards']}")
+
+    dispatches = client.get("/api/v1/admin/dispatched-alerts").json()
+    print(f"Active Dispatches:   {dispatches['total_active_alerts']} field work orders")
+
+    # 7. Test Spatio-Temporal Incident Clustering
+    print("\n--- 7. Testing Spatio-Temporal Incident Clustering (< 80m) ---")
+    # Add a nearby duplicate complaint (20 meters away)
+    client.post("/api/v1/complaints", json={
+        "hazard_type": "electricity_hazard",
+        "description": "Sparking transformer line down on sidewalk near school gate.",
+        "latitude": 13.0828, # ~15 meters away
+        "longitude": 80.2708,
+        "ward": "Ward 77 - Egmore"
+    })
+    clusters = client.get("/api/v1/admin/clusters?max_distance_meters=80").json()
+    print(f"Total Incident Clusters: {clusters['total_clusters']}")
+    for cl in clusters["clusters"]:
+        if cl["total_citizen_reports"] > 1:
+            print(f"  [Cluster {cl['cluster_id']}] {cl['detected_problem']} ({cl['department_name']}) -> {cl['total_citizen_reports']} duplicate citizen reports grouped!")
+
+    # 8. Check Public Feed
+    print("\n--- 8. Verifying Public Citizen Tracking Feed ---")
+    feed = client.get("/api/v1/public/complaints").json()
+    print(f"Public Reports Count: {feed['total']}")
+    sample = feed["complaints"][0]
+    print(f"Sample Public Report: {sample['complaint_id']} - {sample['detected_problem']} ({sample['status']})")
+    print(f"Coarse Location (100m): {sample['approximate_location']}")
 
     print("\n" + "=" * 75)
     print("ALL TESTS PASSED! MUNICIPAL ASSIGNMENT ENGINE 100% OPERATIONAL")

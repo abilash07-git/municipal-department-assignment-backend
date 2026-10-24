@@ -15,7 +15,8 @@ from department_router import (
     classify_hazard_and_route,
     compute_urgency_risk_score,
     calculate_dynamic_sla,
-    detect_ping_pong_deadlock
+    detect_ping_pong_deadlock,
+    cluster_complaints_by_proximity
 )
 
 app = FastAPI(
@@ -98,6 +99,7 @@ async def register_civic_complaint(req: ComplaintInput):
         "hazard_type": req.hazard_type,
         "description": req.description,
         "coordinates": {"latitude": req.latitude, "longitude": req.longitude},
+        "coarse_coordinates": {"latitude": round(req.latitude, 3), "longitude": round(req.longitude, 3)},
         "ward": req.ward,
         "is_ward_boundary": req.is_ward_boundary,
         "image_url": req.image_url,
@@ -238,6 +240,49 @@ async def dispatch_alert_to_department(req: DispatchAlertRequest):
         "complaint_id": req.complaint_id,
         "alert": alert_payload
     }
+
+@app.get("/api/v1/admin/dispatched-alerts")
+async def get_dispatched_alerts():
+    """
+    Returns list of all active dispatches currently with field repair crews,
+    including department, assigned priority, and SLA target deadline.
+    """
+    return {
+        "total_active_alerts": len(ALERTS_HISTORY),
+        "dispatches": ALERTS_HISTORY
+    }
+
+@app.get("/api/v1/admin/clusters")
+async def get_incident_clusters(max_distance_meters: float = Query(80.0, ge=10.0, le=500.0)):
+    """
+    Spatio-Temporal Incident Clustering:
+    Groups citizen complaints within 80 meters belonging to the same department.
+    Prevents dispatching duplicate crews to the same incident during monsoon storms.
+    """
+    all_complaints = list(COMPLAINTS_DB.values())
+    clusters = cluster_complaints_by_proximity(all_complaints, max_distance_meters=max_distance_meters)
+    return {
+        "total_clusters": len(clusters),
+        "total_complaints_analyzed": len(all_complaints),
+        "clusters": clusters
+    }
+
+@app.get("/api/v1/public/complaints")
+async def list_public_complaints():
+    """Returns list of public reports for citizen map/feed (coarse coordinates, status)."""
+    feed = []
+    for c in COMPLAINTS_DB.values():
+        feed.append({
+            "complaint_id": c["complaint_id"],
+            "detected_problem": c["detected_problem"],
+            "ward": c["ward"],
+            "status": c["status"],
+            "assigned_department": c.get("assigned_department_name", "Municipal Review In-Progress"),
+            "approximate_location": c.get("coarse_coordinates") or {"latitude": round(c["coordinates"]["latitude"], 3), "longitude": round(c["coordinates"]["longitude"], 3)},
+            "probabilistic_eta": c["sla"]["probabilistic_eta_range"] if c.get("sla") else "Pending Dispatch",
+            "created_at": c["created_at"]
+        })
+    return {"total": len(feed), "complaints": feed}
 
 @app.post("/api/v1/admin/reassign")
 async def reassign_with_anti_loop(req: ReassignRequest):
@@ -392,6 +437,7 @@ async def seed_demo_data(force: bool = False):
             "hazard_type": s["hazard_type"],
             "description": s["description"],
             "coordinates": {"latitude": s["lat"], "longitude": s["lng"]},
+            "coarse_coordinates": {"latitude": round(s["lat"], 3), "longitude": round(s["lng"], 3)},
             "ward": s["ward"],
             "is_ward_boundary": False,
             "detected_problem": routing["detected_problem"],

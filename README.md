@@ -76,8 +76,11 @@ python test_client.py
 | `GET` | `/api/v1/admin/inbox` | Administrator Dispatch Queue sorted by descending urgency risk |
 | `GET` | `/api/v1/admin/departments` | Returns list of statutory municipal departments with in-charge contacts |
 | `POST` | `/api/v1/admin/dispatch-alert` | **1-Click Dispatch:** Fires rich alert payload to concerned department |
+| `GET` | `/api/v1/admin/dispatched-alerts` | Returns list of all active field dispatches with live SLA clocks |
+| `GET` | `/api/v1/admin/clusters` | **Spatio-Temporal Clustering:** Groups nearby overlapping reports (<= 80m) |
 | `POST` | `/api/v1/admin/reassign` | Reassigns ticket & intercepts Ping-Pong reassignment loops |
 | `GET` | `/api/v1/admin/dashboard-stats` | KPI summary cards: total tickets, pending, dispatched, deadlocks |
+| `GET` | `/api/v1/public/complaints` | Public citizen feed/map view with 100m coarse coordinates |
 | `GET` | `/api/v1/public/complaints/{id}`| Citizen tracking view with status and probabilistic ETA range |
 | `POST` | `/api/v1/admin/seed-demo-data` | Resets/re-seeds the 4 demo municipal complaints anytime |
 
