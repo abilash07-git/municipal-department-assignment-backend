@@ -127,6 +127,43 @@ curl -X GET "http://localhost:8000/api/v1/demo/problem-3-scenario"
 
 ---
 
+## 📸 Real-World Online Dataset Image Testing & Visual Workflow
+
+To test the system against real-world photo datasets and visualize the complete Problem 3 workflow:
+
+```bash
+# Generate high-resolution side-by-side composite cards (1600x960)
+python run_image_workflow_demo.py
+
+# Build interactive HTML showcase widget with live SLA countdown and decline simulation
+python build_problem_3_interactive_showcase.py
+```
+
+### Evaluated Dataset Images & Test Results:
+1. **Case 1: Ward 12 & 13 Boundary Road Waterlogging (`chennai_monsoon_raw.jpg`)**
+   - *Conflict:* Stormwater Drainage vs Road Maintenance
+   - *Precedence Rule:* `HYDRAULIC_ROOT_CAUSE_PRECEDENCE`
+   - *Lead Responder:* `DEPT_DRAINAGE` (5-min ack SLA) | *Joint Partner:* `DEPT_ROADS`
+   - *Ping-Pong Intercept:* Rejection by Drainage Engineer intercepted; escalated to Zonal Joint Commissioner with Mandatory Joint Directive `#JD-2026-904`.
+2. **Case 2: Snapped High-Voltage Power Line in Tree Foliage (`downed_power_line.jpg`)**
+   - *Conflict:* Electricity vs Horticulture & Tree Authority
+   - *Precedence Rule:* `LIFE_SAFETY_ISOLATION_PRECEDENCE`
+   - *Lead Responder:* `DEPT_ELECTRICITY` | *Joint Partner:* `DEPT_HORTICULTURE`
+3. **Case 3: Underground Drinking Water Main Burst & Road Crater (`pothole_kolkata.jpg`)**
+   - *Conflict:* Metro Water Supply vs Roads & Infrastructure
+   - *Precedence Rule:* `UTILITY_EROSION_PRECEDENCE`
+   - *Lead Responder:* `DEPT_WATER_SUPPLY` | *Joint Partner:* `DEPT_ROADS`
+4. **Case 4: Uprooted 15-Ton Banyan Tree Blocking Highway (`fallen_tree_road.jpg`)**
+   - *Conflict:* Horticulture & Tree Authority vs Roads & Traffic
+   - *Precedence Rule:* `TRANSIT_OBSTRUCTION_PRECEDENCE`
+   - *Lead Responder:* `DEPT_HORTICULTURE` | *Joint Partner:* `DEPT_ROADS`
+5. **Case 5: Commercial Refuse Dumped in Storm Canal Culvert (`random_delhi_garbage.jpg`)**
+   - *Conflict:* Solid Waste Management vs Stormwater Drainage
+   - *Precedence Rule:* `DEBRIS_CLEARANCE_PRECEDENCE`
+   - *Lead Responder:* `DEPT_SOLID_WASTE` | *Joint Partner:* `DEPT_DRAINAGE`
+
+---
+
 ## 📡 API Endpoints Reference
 
 | Method | Endpoint | Description |

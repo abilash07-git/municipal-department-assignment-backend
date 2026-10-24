@@ -204,7 +204,7 @@ class AIConflictEngine:
 
         # Priority 1: Live Electric Hazard Entangled with Water or Tree (Life Safety Override)
         if has_elec and is_live_wire:
-            if has_drainage or "flood" in cleaned_text:
+            if any(k in cleaned_text for k in ["flood", "waterlogg", "submerged", "standing water", "in water", "overflowing drain"]):
                 is_conflict = True
                 conflict_type = "ELECTROCUTION_IN_FLOODWATER"
                 primary_id = "DEPT_ELECTRICITY"
