@@ -82,6 +82,14 @@ class DeclineAlertRequest(BaseModel):
     reason: str
     officer_name: str
 
+class GeminiAnalyzeRequest(BaseModel):
+    hazard_type: str
+    description: str
+    ward: str = "Ward 12 / Ward 13 Boundary"
+    is_ward_boundary: bool = False
+    image_url: Optional[str] = None
+    api_key: Optional[str] = None
+
 # ---------------------------------------------------------------------------
 # CORE ENDPOINTS
 # ---------------------------------------------------------------------------
@@ -92,11 +100,48 @@ def health_check():
     return {
         "status": "healthy",
         "service": "Municipal Department Assignment & Conflict Resolution Engine",
-        "version": "2.0.0",
+        "version": "2.1.0",
         "problem_3_compliance": "Full (Ward Boundary Detection, Root-Cause Precedence, Dual SLAs, Anti-Ping-Pong Dispute Lock)",
+        "gemini_api_integration": "Active (Multimodal Reasoning with Statutory Fallback)",
         "configured_departments": len(STATUTORY_MUNICIPAL_DEPARTMENTS),
         "total_complaints": len(COMPLAINTS_DB)
     }
+
+@app.get("/api/v1/gemini/status")
+def gemini_status():
+    """Returns the operational status of Google Gemini API integration."""
+    try:
+        from gemini_analyzer import GeminiMunicipalAnalyzer, GENAI_AVAILABLE
+        api_key = GeminiMunicipalAnalyzer.get_api_key()
+        is_active = GENAI_AVAILABLE and bool(api_key)
+        return {
+            "gemini_sdk_installed": GENAI_AVAILABLE,
+            "gemini_api_key_configured": bool(api_key),
+            "configured_model": GeminiMunicipalAnalyzer.DEFAULT_MODEL,
+            "active_engine": "GOOGLE_GEMINI_MULTIMODAL" if is_active else "STATUTORY_PRECEDENCE_FALLBACK",
+            "zero_downtime_fallback_active": True,
+            "instructions": "Set GEMINI_API_KEY in .env or environment to enable live Gemini multimodal reasoning. The system automatically falls back to deterministic statutory precedence rules if unconfigured."
+        }
+    except Exception as e:
+        return {
+            "gemini_sdk_installed": False,
+            "gemini_api_key_configured": False,
+            "active_engine": "STATUTORY_PRECEDENCE_FALLBACK",
+            "error": str(e)
+        }
+
+@app.post("/api/v1/gemini/analyze")
+async def gemini_analyze_direct(req: GeminiAnalyzeRequest):
+    """Direct multimodal conflict analysis endpoint using Gemini API with fallback."""
+    from gemini_analyzer import GeminiMunicipalAnalyzer
+    return GeminiMunicipalAnalyzer.analyze_complaint(
+        hazard_type=req.hazard_type,
+        description=req.description,
+        ward=req.ward,
+        is_ward_boundary=req.is_ward_boundary,
+        image_url=req.image_url,
+        api_key=req.api_key
+    )
 
 @app.post("/api/v1/complaints")
 async def register_civic_complaint(req: ComplaintInput):
@@ -114,7 +159,8 @@ async def register_civic_complaint(req: ComplaintInput):
         hazard_type=req.hazard_type,
         description=req.description,
         ward=req.ward,
-        is_ward_boundary=req.is_ward_boundary
+        is_ward_boundary=req.is_ward_boundary,
+        image_url=req.image_url
     )
 
     risk = compute_urgency_risk_score(
@@ -158,6 +204,10 @@ async def register_civic_complaint(req: ComplaintInput):
         "conflict_resolution_rationale": routing["conflict_resolution_rationale"],
         "joint_action_required": routing["joint_action_required"],
         "routing_confidence": routing["confidence"],
+        "ai_engine": routing.get("ai_engine", "STATUTORY_PRECEDENCE_FALLBACK"),
+        "ai_model": routing.get("ai_model", "Deterministic_DAG_Precedence_v2"),
+        "image_analyzed": routing.get("image_analyzed", False),
+        "recommended_immediate_action": routing.get("recommended_immediate_action", "Immediate field dispatch mandated."),
         "risk_score": risk["risk_score"],
         "suggested_priority": risk["priority"],
         "status": "PENDING_ADMIN_DISPATCH",
@@ -184,6 +234,10 @@ async def register_civic_complaint(req: ComplaintInput):
         "ownership_rule_applied": routing["ownership_rule_applied"],
         "conflict_resolution_rationale": routing["conflict_resolution_rationale"],
         "joint_action_required": routing["joint_action_required"],
+        "ai_engine": routing.get("ai_engine", "STATUTORY_PRECEDENCE_FALLBACK"),
+        "ai_model": routing.get("ai_model", "Deterministic_DAG_Precedence_v2"),
+        "image_analyzed": routing.get("image_analyzed", False),
+        "recommended_immediate_action": routing.get("recommended_immediate_action", "Immediate field dispatch mandated."),
         "urgency_score": risk["risk_score"],
         "priority": risk["priority"],
         "action_required": "Review pre-selected department and trigger 1-click dispatch",
